@@ -4,17 +4,22 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.le.BluetoothLeScanner
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
-import android.bluetooth.le.ScanSettings
+import android.bluetooth.le.*
 import android.content.Context
 
 class BluetoothScanner(
     private val context: Context,
     private val permissionsManager: PermissionsManager,
+    private val filters: List<Filter>,
     adapter: BluetoothAdapter
 ) {
+    private companion object {
+        val settings = ScanSettings.Builder().build()
+    }
+    sealed class Filter {
+        data class Name(val value: String): Filter()
+    }
+
     private val scanner: BluetoothLeScanner = adapter.bluetoothLeScanner
 
     var discoveredDevices = mutableMapOf<String, BluetoothDevice>()
@@ -24,8 +29,18 @@ class BluetoothScanner(
     fun scan() {
         println(" SCANNING ...")
         permissionsManager.checkAndRequest(Manifest.permission.BLUETOOTH_SCAN)
-        scanner.startScan(scanCallback)
 
+        val filters = filters.map {
+            when(it) {
+                is Filter.Name -> ScanFilter.Builder().setDeviceName(it.value).build()
+            }
+        }
+        scanner.startScan(filters, settings, scanCallback)
+    }
+
+    @SuppressLint("MissingPermission")
+    fun stop() {
+        scanner.stopScan(scanCallback)
     }
 
     private val scanCallback = object : ScanCallback() {
@@ -36,20 +51,16 @@ class BluetoothScanner(
 
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             if (callbackType == ScanSettings.CALLBACK_TYPE_MATCH_LOST) return
-//            println("SCAN. Result: $result")
             handleScanResult(result)
         }
 
         override fun onBatchScanResults(results: MutableList<ScanResult>) {
-//            println("SCAN. Batch Result: $results")
             results.forEach {
                 handleScanResult(it)
             }
         }
 
         private fun handleScanResult(scanResult: ScanResult) {
-//            println("Discovered device: ${scanResult.device}")
-
             discoveredDevices[scanResult.device.address] = scanResult.device
             onUpdated?.invoke(discoveredDevices.values.toList())
         }

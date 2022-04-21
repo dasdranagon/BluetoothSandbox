@@ -11,10 +11,16 @@ class BluetoothTerminal(context: Context, private val permissionsManager: Permis
     val scanner: BluetoothScanner
     private val adapter: BluetoothAdapter
 
+    private companion object {
+        val scanFilers = listOf(
+            BluetoothScanner.Filter.Name("vascovid-gatt-server")
+        )
+    }
+
     init {
         val manager: BluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         adapter = manager.adapter
-        scanner = BluetoothScanner(context, permissionsManager, adapter)
+        scanner = BluetoothScanner(context, permissionsManager, scanFilers, adapter)
         monitor = BluetoothMonitor(context,permissionsManager,  adapter)
 
         permissionsManager.checkAndRequest(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -36,6 +42,7 @@ fun BluetoothTerminal.click(number: Int) {
         1 -> monitor.start()
         2 -> monitor.stop()
         3 -> scanner.scan()
+        4 -> scanner.stop()
 
         else -> println("click button $number")
     }
