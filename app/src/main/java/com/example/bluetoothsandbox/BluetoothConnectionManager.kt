@@ -10,7 +10,7 @@ class BluetoothConnectionManager(private val context: Context) {
 
     @SuppressLint("MissingPermission")
     fun connect(device: BluetoothDevice) {
-        gatt = device.connectGatt(context, false, callback, BluetoothDevice.TRANSPORT_BREDR)
+        gatt = device.connectGatt(context, false, callback, BluetoothDevice.TRANSPORT_LE)
     }
 
     @SuppressLint("MissingPermission")
@@ -26,6 +26,31 @@ class BluetoothConnectionManager(private val context: Context) {
     @SuppressLint("MissingPermission")
     fun discoverServices() {
         gatt?.discoverServices()
+    }
+
+    fun listAvailableServices() {
+        println(" ⚙️ SERVICES: ${gatt?.services?.map { it.uuid.toString() }}")
+    }
+
+    fun pair() {
+        try {
+            gatt?.device?.run {
+                javaClass.getMethod("createBond").invoke(this)
+            }
+
+        } catch (e: Exception) {
+            println("Pairing exception: $e")
+        }
+    }
+
+    fun unpair() {
+        try {
+            gatt?.device?.run {
+                javaClass.getMethod("removeBond").invoke(this)
+            }
+        } catch (e: Exception) {
+            println("Unpairing exception: $e")
+        }
     }
 
     private val callback = object : BluetoothGattCallback() {

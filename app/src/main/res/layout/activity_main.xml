@@ -60,33 +60,36 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Reconnect" />
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="10pt"/>
         <Button
             android:id="@+id/bt_7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Discover Services" />
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="10pt"/>
         <Button
             android:id="@+id/bt_9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Bt9" />
+            android:text="Print Discovered Services" />
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="10pt"/>
         <Button
             android:id="@+id/bt_10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Bt10" />
+            android:text="Pair" />
         <Button
             android:id="@+id/bt_11"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Bt11" />
+            android:text="Unpair" />
 
     </LinearLayout>
 

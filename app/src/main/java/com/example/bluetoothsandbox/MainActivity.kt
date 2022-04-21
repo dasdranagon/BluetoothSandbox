@@ -19,5 +19,10 @@ class MainActivity : AppCompatActivity() {
         (findViewById<Button>(R.id.bt_4)).setOnClickListener { terminal.click(4) }
         (findViewById<Button>(R.id.bt_5)).setOnClickListener { terminal.click(5) }
         (findViewById<Button>(R.id.bt_6)).setOnClickListener { terminal.click(6) }
+        (findViewById<Button>(R.id.bt_7)).setOnClickListener { terminal.click(7) }
+        (findViewById<Button>(R.id.bt_8)).setOnClickListener { terminal.click(8) }
+        (findViewById<Button>(R.id.bt_9)).setOnClickListener { terminal.click(9) }
+        (findViewById<Button>(R.id.bt_10)).setOnClickListener { terminal.click(10) }
+        (findViewById<Button>(R.id.bt_11)).setOnClickListener { terminal.click(11) }
     }
 }

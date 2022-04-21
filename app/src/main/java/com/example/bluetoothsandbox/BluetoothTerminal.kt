@@ -18,7 +18,9 @@ class BluetoothTerminal(
 
     private companion object {
         val scanFilers = listOf<BluetoothScanner.Filter>(
-//            BluetoothScanner.Filter.Name("vascovid-gatt-server")
+            BluetoothScanner.Filter.Name("vascovid-gatt-server"),
+//            BluetoothScanner.Filter.Name("Suunto Smart Sensor"),
+//            BluetoothScanner.Filter.Name("HRM (Ver0.4)")
         )
     }
 
@@ -59,6 +61,9 @@ fun BluetoothTerminal.click(number: Int) {
         6 -> connectionManager.disconnect()
         7 -> connectionManager.discoverServices()
         8 -> connectionManager.reconnect()
+        9 -> connectionManager.listAvailableServices()
+        10 -> connectionManager.pair()
+        11 -> connectionManager.unpair()
         else -> println("click button $number")
     }
 }
