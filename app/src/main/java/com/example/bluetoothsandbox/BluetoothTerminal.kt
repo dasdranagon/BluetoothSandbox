@@ -3,17 +3,22 @@ package com.example.bluetoothsandbox
 import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 
-class BluetoothTerminal(context: Context, private val permissionsManager: PermissionsManager, ) {
+class BluetoothTerminal(
+    private val context: Context,
+    private val permissionsManager: PermissionsManager
+    ) {
     val monitor: BluetoothMonitor
     val scanner: BluetoothScanner
+    val connectionManager: BluetoothConnectionManager
     private val adapter: BluetoothAdapter
 
     private companion object {
-        val scanFilers = listOf(
-            BluetoothScanner.Filter.Name("vascovid-gatt-server")
+        val scanFilers = listOf<BluetoothScanner.Filter>(
+//            BluetoothScanner.Filter.Name("vascovid-gatt-server")
         )
     }
 
@@ -22,6 +27,7 @@ class BluetoothTerminal(context: Context, private val permissionsManager: Permis
         adapter = manager.adapter
         scanner = BluetoothScanner(context, permissionsManager, scanFilers, adapter)
         monitor = BluetoothMonitor(context,permissionsManager,  adapter)
+        connectionManager = BluetoothConnectionManager(context)
 
         permissionsManager.checkAndRequest(Manifest.permission.ACCESS_FINE_LOCATION)
 
@@ -35,6 +41,12 @@ class BluetoothTerminal(context: Context, private val permissionsManager: Permis
             println(" DISCOVERED: ${it.mapNotNull { it.name }}")
         }
     }
+
+    fun connectFirst() {
+        permissionsManager.checkAndRequest(Manifest.permission.BLUETOOTH_CONNECT)
+        val device = scanner.discoveredDevices.values.first()
+        connectionManager.connect(device)
+    }
 }
 
 fun BluetoothTerminal.click(number: Int) {
@@ -43,7 +55,10 @@ fun BluetoothTerminal.click(number: Int) {
         2 -> monitor.stop()
         3 -> scanner.scan()
         4 -> scanner.stop()
-
+        5 -> connectFirst()
+        6 -> connectionManager.disconnect()
+        7 -> connectionManager.discoverServices()
+        8 -> connectionManager.reconnect()
         else -> println("click button $number")
     }
 }
